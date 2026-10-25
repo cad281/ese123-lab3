@@ -188,6 +188,75 @@ black0 brown1 red2 orange3 yellow4 green5 blue6 violet7 grey8 white9
 **Example:** Measured 2.861 V vs 2.875 V → −0.5%.
 
 
+## Practice questions
+
+Same concepts and formulas as the Brightspace quiz, with new numbers (not the real quiz questions). Try each one before opening the answer.
+
+**Q1.** A 5 V source drives R1 = 2.2 kΩ (top) and R2 = 3.3 kΩ (bottom). Find Vout and the current.
+
+<details><summary>Show answer</summary>
+
+**3.0 V, 0.909 mA**. Vout = 5 × 3.3/5.5 = 3.0 V. I = 5/5.5k = 0.909 mA.
+
+</details>
+
+**Q2.** For the same divider, what input gives Vout = 2.5 V?
+
+<details><summary>Show answer</summary>
+
+**4.17 V**. Vin = Vout(R1 + R2)/R2 = 2.5 × 5.5/3.3 = 4.17 V.
+
+</details>
+
+**Q3.** VDD = 5 V. Between VDD and TP: 10 kΩ ∥ 15 kΩ. Between TP and GND: 12 kΩ ∥ 24 kΩ ∥ 24 kΩ. Find VTP.
+
+<details><summary>Show answer</summary>
+
+**2.5 V**. Top: 10k·15k/25k = 6 kΩ. Bottom: 24k ∥ 24k = 12k, then 12k ∥ 12k = 6 kΩ. Equal halves → 5 × 6/12 = 2.5 V.
+
+</details>
+
+**Q4.** With the power off, what resistance should the DMM show between TP and VDD in the previous circuit?
+
+<details><summary>Show answer</summary>
+
+**6 kΩ**. Only the top group connects TP to VDD (VDD and GND are not connected to each other on an unpowered board), so you read Rtop = 6 kΩ.
+
+</details>
+
+**Q5.** A 5% resistor is orange-white-red-gold. What is its value and allowed range?
+
+<details><summary>Show answer</summary>
+
+**3.9 kΩ, 3705–4095 Ω**. Orange 3, white 9, red ×100 → 3900 Ω. ±5% = ±195 Ω.
+
+</details>
+
+**Q6.** A netlist line reads R3 N002 0 4.7m. What value did SPICE use, and what was probably intended?
+
+<details><summary>Show answer</summary>
+
+**4.7 mΩ; probably 4.7 MΩ**. SPICE ignores case: m = milli. Mega must be typed MEG: 4.7MEG.
+
+</details>
+
+**Q7.** How many solutions does .DC V1 0 5 0.05 compute?
+
+<details><summary>Show answer</summary>
+
+**101**. (5 − 0)/0.05 = 100 steps, plus the starting point = 101 solutions.
+
+</details>
+
+**Q8.** A 6 V source drives 2 kΩ in total. What does LTspice report for I(V1)?
+
+<details><summary>Show answer</summary>
+
+**−3 mA**. 3 mA flows out of the source’s + terminal; SPICE reports current into +, so −3 mA.
+
+</details>
+
+
 ## Report (one PDF)
 
 - Netlist screenshot (2 pts)

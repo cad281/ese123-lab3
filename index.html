@@ -125,6 +125,13 @@ ol.flow{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:68ch}
 .psu .big{font-size:1.7rem;color:#5ee08a;font-variant-numeric:tabular-nums}
 .psu .st{font-size:.8rem;padding:2px 8px;border-radius:4px;background:#26323f}
 .psu .st.cc{background:#c2410c;color:#fff}.psu .st.cv{background:#17803d;color:#fff}.psu .st.off{background:#3a4552;color:#aab}
+.plist{display:grid;gap:10px;margin:0;padding:0;list-style:none;counter-reset:pq}
+.plist li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:grid;gap:8px;counter-increment:pq}
+.plist .q::before{content:"Q" counter(pq) ". ";font-family:var(--f-mono);color:var(--accent);font-weight:600}
+.plist details summary{cursor:pointer;font-family:var(--f-mono);font-size:.85rem;color:var(--accent)}
+.plist details[open] summary{margin-bottom:6px}
+.plist .ans{font-weight:700}
+.plist .work{font-size:.92rem;color:var(--muted)}
 </style>
 <div class="wrap">
 <!--title: Lab 3 SPICE & Soldering-->
@@ -140,7 +147,8 @@ ol.flow{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:68ch}
     <a href="#solder">4 · Soldering</a>
     <a href="#verify">5 · Verifying the board</a>
     <a href="#formulas">6 · Formula sheet</a>
-    <a href="#report">7 · Report guide</a>
+    <a href="#practice">7 · Practice questions</a>
+    <a href="#report">8 · Report guide</a>
   </nav>
 </header>
 
@@ -251,9 +259,16 @@ ol.flow{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:68ch}
   <div class="fgrid" id="formulasHost"></div>
 </section>
 
+<section class="lab" id="practice">
+  <div class="steps-tag">Self-check · same concepts as the Brightspace quiz, new numbers</div>
+  <h2>7 · Practice questions</h2>
+  <p>Try each one before opening the answer. These are not the real quiz questions; they use the same formulas and ideas with different numbers.</p>
+  <ol class="plist" id="practiceHost"></ol>
+</section>
+
 <section class="lab" id="report">
   <div class="steps-tag">Report: one PDF</div>
-  <h2>7 · Report guide</h2>
+  <h2>8 · Report guide</h2>
   <ol class="qlist">
     <li>Screenshot of your netlist (step 14).<span>⊞+Shift+S on Windows, ⇧⌘5 on Mac.</span></li>
     <li>DC sweep screenshot with the cursor at V(vout) ≈ π and the coordinate box visible (step 24).<span>Expect V1 ≈ 4.712 V.</span></li>
@@ -340,6 +355,7 @@ function loop(now){const t=(now-t0)/1000;for(const [el,fn] of anims){if(vis.get(
 
 
 window.FORMULAS=[{"name": "Voltage divider", "eq": "V<sub>out</sub> = V<sub>in</sub> · R<sub>bottom</sub> / (R<sub>top</sub> + R<sub>bottom</sub>)", "when": "Any time two resistors (or two resistor groups) are in series and you want the voltage at the node between them.", "ex": "3 V, 1k top, 2k bottom → 3 × 2/3 = 2 V (the .OP answer)."}, {"name": "Inverse divider", "eq": "V<sub>in</sub> = V<sub>out</sub> · (R<sub>top</sub> + R<sub>bottom</sub>) / R<sub>bottom</sub>", "when": "You know the output you want and need the input (step 24).", "ex": "V<sub>out</sub> = π → V<sub>in</sub> = π × 3/2 = 4.712 V."}, {"name": "Parallel resistors", "eq": "1/R<sub>p</sub> = 1/R<sub>a</sub> + 1/R<sub>b</sub> + 1/R<sub>c</sub> …", "when": "Parts connected between the same two nodes, like R1 and R2 (VDD to TP1) or R3, R4, R5 (TP1 to GND).", "ex": "9.1k ∥ 13k = 5.353 kΩ;  22k ∥ 18k ∥ 27k = 7.244 kΩ."}, {"name": "Two in parallel (shortcut)", "eq": "R<sub>p</sub> = R<sub>a</sub>·R<sub>b</sub> / (R<sub>a</sub> + R<sub>b</sub>)", "when": "Exactly two resistors in parallel: product over sum.", "ex": "9100 × 13000 / 22100 = 5353 Ω."}, {"name": "TP1 voltage", "eq": "V<sub>TP1</sub> = VDD · R<sub>bot</sub> / (R<sub>top</sub> + R<sub>bot</sub>)\nR<sub>top</sub> = R1∥R2, R<sub>bot</sub> = R3∥R4∥R5", "when": "Step 27 hand calculation, and step 64 comparison at your measured VDD.", "ex": "5 × 7.244 / 12.597 = 2.875 V."}, {"name": "Ohm’s law", "eq": "I = V / R", "when": "Finding currents in the .OP results or checking SPICE by hand.", "ex": "3 V / 3 kΩ = 1 mA through R1 and R2."}, {"name": "SPICE source current sign", "eq": "I(V1) = −(current leaving the + terminal)", "when": "Reading a negative source current in LTspice: passive sign convention for every part.", "ex": "Source delivering 1 mA shows I(V1) = −1 mA."}, {"name": "SPICE prefixes", "eq": "f p n u m k MEG G = 10⁻¹⁵ 10⁻¹² 10⁻⁹ 10⁻⁶ 10⁻³ 10³ 10⁶ 10⁹", "when": "Typing component values. SPICE ignores units and is case-insensitive, so m and M both mean milli.", "ex": "10MEG = 10 MΩ;  10M = 10 mΩ (a classic mistake)."}, {"name": ".DC sweep directive", "eq": ".DC &lt;source&gt; &lt;start&gt; &lt;stop&gt; &lt;step&gt;", "when": "Seeing how outputs change as an input voltage changes.", "ex": ".DC V1 0 10 0.1 → 101 solutions;  .DC V1 4 6 0.01 for step 64."}, {"name": "5% resistor colour code", "eq": "band1 band2 × 10^band3, gold = ±5%\nblack0 brown1 red2 orange3 yellow4 green5 blue6 violet7 grey8 white9", "when": "Picking the right resistor before soldering.", "ex": "brown-grey-orange = 1, 8, ×1000 = 18 kΩ (R4)."}, {"name": "Percent difference", "eq": "(measured − predicted) / predicted × 100%", "when": "Comparing measured TP1 with the hand calculation and the SPICE sweep.", "ex": "Measured 2.861 V vs 2.875 V → −0.5%."}];
+window.PRACTICE=[{"q": "A 5 V source drives R1 = 2.2 kΩ (top) and R2 = 3.3 kΩ (bottom). Find V<sub>out</sub> and the current.", "a": "3.0 V, 0.909 mA", "work": "V<sub>out</sub> = 5 × 3.3/5.5 = 3.0 V. I = 5/5.5k = 0.909 mA."}, {"q": "For the same divider, what input gives V<sub>out</sub> = 2.5 V?", "a": "4.17 V", "work": "V<sub>in</sub> = V<sub>out</sub>(R1 + R2)/R2 = 2.5 × 5.5/3.3 = 4.17 V."}, {"q": "VDD = 5 V. Between VDD and TP: 10 kΩ ∥ 15 kΩ. Between TP and GND: 12 kΩ ∥ 24 kΩ ∥ 24 kΩ. Find V<sub>TP</sub>.", "a": "2.5 V", "work": "Top: 10k·15k/25k = 6 kΩ. Bottom: 24k ∥ 24k = 12k, then 12k ∥ 12k = 6 kΩ. Equal halves → 5 × 6/12 = 2.5 V."}, {"q": "With the power off, what resistance should the DMM show between TP and VDD in the previous circuit?", "a": "6 kΩ", "work": "Only the top group connects TP to VDD (VDD and GND are not connected to each other on an unpowered board), so you read R<sub>top</sub> = 6 kΩ."}, {"q": "A 5% resistor is orange-white-red-gold. What is its value and allowed range?", "a": "3.9 kΩ, 3705–4095 Ω", "work": "Orange 3, white 9, red ×100 → 3900 Ω. ±5% = ±195 Ω."}, {"q": "A netlist line reads <span class=\"mono\">R3 N002 0 4.7m</span>. What value did SPICE use, and what was probably intended?", "a": "4.7 mΩ; probably 4.7 MΩ", "work": "SPICE ignores case: m = milli. Mega must be typed MEG: <span class=\"mono\">4.7MEG</span>."}, {"q": "How many solutions does <span class=\"mono\">.DC V1 0 5 0.05</span> compute?", "a": "101", "work": "(5 − 0)/0.05 = 100 steps, plus the starting point = 101 solutions."}, {"q": "A 6 V source drives 2 kΩ in total. What does LTspice report for I(V1)?", "a": "−3 mA", "work": "3 mA flows out of the source’s + terminal; SPICE reports current into +, so −3 mA."}];
 // ---- shared additions for the lab series ----
 const E24=[1.0,1.1,1.2,1.3,1.5,1.6,1.8,2.0,2.2,2.4,2.7,3.0,3.3,3.6,3.9,4.3,4.7,5.1,5.6,6.2,6.8,7.5,8.2,9.1];
 function e24Near(v){const e=Math.floor(Math.log10(v));let best=1e99,bv=v;for(const d of [e-1,e,e+1])for(const m of E24){const c=m*Math.pow(10,d);if(Math.abs(Math.log(c/v))<Math.abs(Math.log(best/v))){best=c;bv=c}}return +bv.toPrecision(3)}
@@ -382,6 +398,8 @@ function dotLayer(svg,specs){const g=document.createElementNS(NS,'g');svg.append
 // resistor & part drawings (BAND index 10 = gold)
 const BAND=['#111','#7a4a1e','#d32f2f','#f57c00','#fdd835','#2e7d32','#1e63d6','#7b3fb5','#8a8a8a','#f4f4f4','#c9a227'];
 const resSVG=b=>`<svg viewBox="0 0 160 40"><line x1="0" y1="20" x2="160" y2="20" stroke="#9aa3ad" stroke-width="3"/><rect x="38" y="8" width="84" height="24" rx="10" fill="${b.length>4?'#9cc3e6':'#d8c49a'}"/>${b.map((c,i)=>`<rect x="${(i===b.length-1?100:50)+(i===b.length-1?6:i*13)}" y="8" width="7" height="24" fill="${BAND[c]}"/>`).join('')}</svg>`;
+function renderPractice(el,list){el.innerHTML=list.map(p=>`<li><div class="q">${p.q}</div><details><summary>Show answer</summary><div class="ans">${p.a}</div><div class="work">${p.work}</div></details></li>`).join('')}
+const pEl=document.getElementById('practiceHost');if(pEl&&window.PRACTICE)renderPractice(pEl,window.PRACTICE);
 
 /* 1. LTspice build stepper */
 const LT=[
